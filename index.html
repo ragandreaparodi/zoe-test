@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Zoe test">
+<link rel="manifest" href="manifest.json">
+<title>Zoe test</title>
+<style>
+  body { font-family: -apple-system, sans-serif; margin: 0; padding: 24px; background: #f6f4ef; color: #222; }
+  button { font-size: 22px; padding: 22px; width: 100%; border: 0; border-radius: 16px; background: #2f6f4f; color: #fff; }
+  #stato { margin: 16px 0; padding: 12px; background: #fff; border-radius: 12px; font-size: 15px; line-height: 1.5; }
+  li { padding: 6px 0; border-bottom: 1px solid #ddd; }
+  .piccolo { font-size: 13px; color: #666; }
+</style>
+</head>
+<body>
+<h1>Zoe – prova dati</h1>
+<button id="tocco">Registra un tocco</button>
+<div id="stato">Controllo in corso...</div>
+<p class="piccolo">Tocchi salvati (il più recente in alto):</p>
+<ul id="elenco"></ul>
+<button id="esporta" style="background:#555;font-size:16px;padding:12px;margin-top:16px">Esporta CSV</button>
+<script>
+const NOME_DB = 'zoe-test', STORE = 'tocchi';
+function apriDb() {
+  return new Promise((ok, no) => {
+    const r = indexedDB.open(NOME_DB, 1);
+    r.onupgradeneeded = () => r.result.createObjectStore(STORE, { keyPath: 'id', autoIncrement: true });
+    r.onsuccess = () => ok(r.result);
+    r.onerror = () => no(r.error);
+  });
+}
+async function tutti() {
+  const db = await apriDb();
+  return new Promise((ok, no) => {
+    const q = db.transaction(STORE).objectStore(STORE).getAll();
+    q.onsuccess = () => ok(q.result);
+    q.onerror = () => no(q.error);
+  });
+}
+async function aggiungi() {
+  const db = await apriDb();
+  return new Promise((ok, no) => {
+    const t = db.transaction(STORE, 'readwrite');
+    t.objectStore(STORE).add({ quando: new Date().toISOString() });
+    t.oncomplete = ok;
+    t.onerror = () => no(t.error);
+  });
+}
+async function disegna() {
+  const dati = await tutti();
+  document.getElementById('elenco').innerHTML = dati.slice().reverse()
+    .map(d => '<li>' + new Date(d.quando).toLocaleString('it-IT') + '</li>').join('');
+  return dati.length;
+}
+async function stato() {
+  const n = await disegna();
+  let persistente = 'non supportato';
+  if (navigator.storage && navigator.storage.persist) {
+    persistente = (await navigator.storage.persisted()) ? 'sì' : (await navigator.storage.persist()) ? 'sì (concesso ora)' : 'no';
+  }
+  const installata = (navigator.standalone === true || matchMedia('(display-mode: standalone)').matches) ? 'sì' : 'no, aprila dall\'icona';
+  document.getElementById('stato').innerHTML =
+    'Tocchi salvati: <b>' + n + '</b><br>Storage persistente: <b>' + persistente + '</b><br>Aperta dalla schermata Home: <b>' + installata + '</b>';
+}
+document.getElementById('tocco').onclick = async () => { await aggiungi(); await stato(); };
+document.getElementById('esporta').onclick = async () => {
+  const dati = await tutti();
+  const csv = 'id,quando\n' + dati.map(d => d.id + ',' + d.quando).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+  a.download = 'zoe-test.csv';
+  a.click();
+};
+stato();
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+</script>
+</body>
+</html>
