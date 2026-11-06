@@ -1,0 +1,8 @@
+{
+  "name": "Zoe test",
+  "short_name": "Zoe test",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f6f4ef",
+  "theme_color": "#2f6f4f"
+}
