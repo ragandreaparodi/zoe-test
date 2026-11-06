@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zoe palette</title>
+<style>
+body{font-family:-apple-system,Arial,sans-serif;margin:0;padding:12px;background:#777777}
+h2{color:#ffffff;margin:20px 0 8px;font-size:18px}
+.t{border-radius:20px;padding:14px;margin-bottom:12px}
+.c{font-size:12px;opacity:.8;margin-bottom:8px}
+.s{border-radius:10px;padding:8px;font-size:14px;margin-bottom:10px}
+.b{display:block;width:100%;border:0;border-radius:16px;font-size:22px;font-weight:700;padding:30px 6px;margin-bottom:10px}
+.r{font-size:14px;padding:6px 0;border-top:1px solid rgba(128,128,128,.35)}
+.p{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:8px}
+</style></head><body>
+<script>
+// ordine: sfondo, testo, start, testo start, stop, testo stop, urina, medicine, riquadro
+const P=[
+["1 Salvia",["#F6F4EF","#222222","#2F6F4F","#FFFFFF","#B3392F","#FFFFFF","#C9962B","#2B6E8F","#FFFFFF"],["#1B211E","#ECEFEA","#5FBF8C","#10241B","#FF7A6B","#2A0E0A","#C9962B","#4FA3C7","#262E2A"]],
+["2 Oceano",["#F2F7FA","#14232E","#1F6FB2","#FFFFFF","#D9531E","#FFFFFF","#E0B000","#1F6FB2","#FFFFFF"],["#0F1A22","#E8F1F7","#5AB0F0","#0A1A28","#FF9A5C","#2A1204","#E0B000","#5AB0F0","#18262F"]],
+["3 Contrasto alto",["#FFFFFF","#000000","#006B3C","#FFFFFF","#A30000","#FFFFFF","#FFD600","#0277BD","#F2F2F2"],["#000000","#FFFFFF","#3DDC84","#000000","#FF5252","#000000","#FFD600","#4FC3F7","#1A1A1A"]],
+["4 Menta",["#EAF7F1","#10241B","#12684A","#FFFFFF","#C4422F","#FFFFFF","#D4A11E","#2F7DA8","#FFFFFF"],["#0E1F18","#E6F5EE","#6FE3B0","#0A2018","#FF8070","#2A0E0A","#D4A11E","#5AB0D8","#18302A"]]
+];
+function f(n,m,c){return '<div class="t" style="background:'+c[0]+';color:'+c[1]+'"><div class="c">'+n+' · '+m+'</div><div class="s" style="background:'+c[8]+'">Zoe · 32 kg</div><button class="b" style="background:'+c[2]+';color:'+c[3]+'">▶ START CRISI</button><button class="b" style="background:'+c[4]+';color:'+c[5]+'">■ STOP CRISI</button><div class="r"><span class="p" style="background:'+c[4]+'"></span>Attacco · 07:42 · 1 min 20 s</div><div class="r"><span class="p" style="background:'+c[6]+'"></span>Urina · 09:10</div><div class="r"><span class="p" style="background:'+c[7]+'"></span>Medicina · 08:00 · in orario</div></div>';}
+P.forEach(function(x){document.body.insertAdjacentHTML('beforeend','<h2>Palette '+x[0]+'</h2>'+f(x[0],'chiara',x[1])+f(x[0],'scura',x[2]));});
+</script>
+</body></html>
